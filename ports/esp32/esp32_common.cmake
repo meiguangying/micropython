@@ -133,7 +133,7 @@ list(APPEND MICROPY_SOURCE_PORT
     modesp.c
     esp32_nvs.c
     esp32_partition.c
-    esp32_rmt.c
+    # esp32_rmt.c # ESP32C2 can't use old rmt
     esp32_ulp.c
     modesp32.c
     machine_hw_spi.c

@@ -93,6 +93,8 @@ static void IRAM_ATTR machine_bitstream_high_low_bitbang(mp_hal_pin_obj_t pin, u
 /******************************************************************************/
 // RMT implementation
 
+#if IDF_TARGET_ESP32C3
+
 #include "driver/rmt.h"
 
 // Logical 0 and 1 values (encoded as a rmt_item32_t).
@@ -173,6 +175,8 @@ static void machine_bitstream_high_low_rmt(mp_hal_pin_obj_t pin, uint32_t *timin
     esp_rom_gpio_connect_out_signal(pin, SIG_GPIO_OUT_IDX, false, false);
 }
 
+#endif
+
 /******************************************************************************/
 // Interface to machine.bitstream
 
@@ -180,7 +184,7 @@ void machine_bitstream_high_low(mp_hal_pin_obj_t pin, uint32_t *timing_ns, const
     if (esp32_rmt_bitstream_channel_id < 0) {
         machine_bitstream_high_low_bitbang(pin, timing_ns, buf, len);
     } else {
-        machine_bitstream_high_low_rmt(pin, timing_ns, buf, len, esp32_rmt_bitstream_channel_id);
+        // machine_bitstream_high_low_rmt(pin, timing_ns, buf, len, esp32_rmt_bitstream_channel_id);
     }
 }
 
