@@ -90,10 +90,9 @@ static void IRAM_ATTR machine_bitstream_high_low_bitbang(mp_hal_pin_obj_t pin, u
     mp_hal_quiet_timing_exit(irq_state);
 }
 
+#ifndef CONFIG_IDF_TARGET_ESP32C2
 /******************************************************************************/
 // RMT implementation
-
-#if IDF_TARGET_ESP32C3
 
 #include "driver/rmt.h"
 
@@ -181,11 +180,16 @@ static void machine_bitstream_high_low_rmt(mp_hal_pin_obj_t pin, uint32_t *timin
 // Interface to machine.bitstream
 
 void machine_bitstream_high_low(mp_hal_pin_obj_t pin, uint32_t *timing_ns, const uint8_t *buf, size_t len) {
+
+#ifdef CONFIG_IDF_TARGET_ESP32C2
+    machine_bitstream_high_low_bitbang(pin, timing_ns, buf, len);
+#else
     if (esp32_rmt_bitstream_channel_id < 0) {
         machine_bitstream_high_low_bitbang(pin, timing_ns, buf, len);
     } else {
-        // machine_bitstream_high_low_rmt(pin, timing_ns, buf, len, esp32_rmt_bitstream_channel_id);
+        machine_bitstream_high_low_rmt(pin, timing_ns, buf, len, esp32_rmt_bitstream_channel_id);
     }
+#endif
 }
 
 #endif // MICROPY_PY_MACHINE_BITSTREAM
